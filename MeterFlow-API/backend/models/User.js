@@ -1,0 +1,106 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+    select: false
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'api_owner', 'consumer'],
+    default: 'api_owner'
+  },
+  subscriptionPlan: {
+    type: String,
+    enum: ['free', 'pro', 'enterprise'],
+    default: 'free'
+  },
+  company: String,
+  avatar: String,
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  emailVerificationToken: String,
+  emailVerificationExpires: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  apiKeysCount: {
+    type: Number,
+    default: 0
+  },
+  totalRequests: {
+    type: Number,
+    default: 0
+  },
+  monthlyRequestLimit: {
+    type: Number,
+    default: 1000
+  },
+  billingAddress: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String
+  },
+  stripeCustomerId: String,
+  paymentMethod: {
+    type: String,
+    enum: ['card', 'bank_transfer', 'none'],
+    default: 'none'
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, { timestamps: true });
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Method to compare password
+userSchema.methods.comparePassword = async function(passwordToCompare) {
+  return await bcrypt.compare(passwordToCompare, this.password);
+};
+
+// Method to get user without sensitive data
+userSchema.methods.toJSON = function() {
+  const { password, passwordResetToken, emailVerificationToken, ...user } = this.toObject();
+  return user;
+};
+
+module.exports = mongoose.model('User', userSchema);
