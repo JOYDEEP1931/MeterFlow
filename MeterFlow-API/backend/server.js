@@ -21,9 +21,8 @@ const io = socketIO(server, {
 // Middleware
 
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: 'http://localhost:3000', // frontend URL
+  credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

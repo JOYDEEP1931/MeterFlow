@@ -5,7 +5,7 @@ const User = require('../models/User');
 exports.register = async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
-
+    console.log('Registering user:', { email, name, role });
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -16,7 +16,8 @@ exports.register = async (req, res) => {
       user: user.toJSON()
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.log('Registration error:', error);
+    res.status(400).json({ error: error.message, errorStack: error.stack });
   }
 };
 

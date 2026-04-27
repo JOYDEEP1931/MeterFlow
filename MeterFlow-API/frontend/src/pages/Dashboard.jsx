@@ -107,7 +107,7 @@ export const Dashboard = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 bg-white/70 backdrop-blur-xl dark:bg-slate-800/70 border border-white/20 rounded-3xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
-            <BarChart3 className="w-7 h-7 text-blue-600" />
+            <BarChart className="w-7 h-7 text-blue-600" />
             Usage Overview
           </h2>
           <div className="h-96">

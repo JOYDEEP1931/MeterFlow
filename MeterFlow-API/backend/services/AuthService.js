@@ -9,15 +9,17 @@ class AuthService {
     if (existingUser) {
       throw new Error('User already exists');
     }
-
+    console.log('Creating user:', { email, name, role });
     const user = new User({
       email,
       password,
       name,
       role
     });
+    console.log('User created:', user);
 
     await user.save();
+    console.log('User saved to database:', user);
     return user;
   }
 
