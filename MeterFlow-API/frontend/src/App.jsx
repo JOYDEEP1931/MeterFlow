@@ -5,6 +5,7 @@ import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Dashboard } from './pages/Dashboard'
 import { useAuthStore } from './store/authStore'
+import CreateAPI from './pages/CreateAPI'
 
 function App() {
   const user = useAuthStore((state) => state.user)
@@ -51,7 +52,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
-        </Routes>
+          <Route path="/create-api" element={<CreateAPI/>} />
+         </Routes>
       </main>
     </div>
   )

@@ -6,12 +6,15 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, Zap, Key, CreditCard, Users, Clock } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
 
 const DashboardStats = () => {
   const user = useAuthStore((state) => state.user)
   
+
+
   const { data: stats } = useQuery({
     queryKey: ['userStats'],
     queryFn: () => axios.get('/api/analytics/summary').then(res => res.data),
@@ -81,6 +84,12 @@ const DashboardStats = () => {
 export const Dashboard = () => {
   const user = useAuthStore((state) => state.user)
 
+  const { data: apisData } = useQuery({
+    queryKey: ['userApis', user?.id],
+    queryFn: () => axios.get('/api/apis', { params: { userId: user?.id } }).then(res => res.data.apis),
+  })
+  console.log('APIs Data:', apisData)
+
   return (
     <div className="space-y-8">
       <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -93,9 +102,12 @@ export const Dashboard = () => {
           </p>
         </div>
         <div className="flex gap-3">
+          <Link to="/create-api">
           <button className="btn-primary px-8 h-12">
             Create API
           </button>
+          </Link>
+          
           <button className="btn-secondary px-8 h-12">
             New Key
           </button>
@@ -135,7 +147,7 @@ export const Dashboard = () => {
               API Status
             </h3>
             <div className="space-y-4">
-              {apis.map((api, index) => (
+              { apisData?.map((api, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-slate-50/50 dark:bg-slate-700/50 rounded-2xl">
                   <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 rounded-full bg-${api.status === 'active' ? 'green' : 'orange'}-400`} />
